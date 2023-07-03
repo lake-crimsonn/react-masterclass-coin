@@ -1,46 +1,48 @@
-# Getting Started with Create React App
+# 5.0 setup
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+```
+React Query, React Router 설치
+npm i react-router-dom@5.3.0 react-query
+npm i --save-dev @types/react-router-dom
+(2022.02기준 React Router 6버전으로 진행시 @types/react-router-dom를 설치하지 않아도 타입을 불러옵니다.)
 
-## Available Scripts
+react-router-dom@5.3.0이 아닌 그냥 react-router-dom으로 설치하게 되면 현재 기준으로 6버전이 설치되고, 바뀐 6버전 문법으로 진행하셔야 합니다.
+ex) < Route path="/" element={< Coins / >} />
 
-In the project directory, you can run:
+React Router 5 -> 6에서 바뀐 점
+Switch컴포넌트 -> Routes컴포넌트로 변경
+exact삭제
+useHistory -> useNavigate
+useRoutes 등
 
-### `npm start`
+CoinPaprika
+https://api.coinpaprika.com/#tag/Tickers
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+React Query
+https://react-query.tanstack.com
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+새 프로젝트 셋업
+npx create-react-app@5.0.0 react-masterclass-course --template typescript
+```
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# 5.1 styles
 
-### `npm run build`
+- 스타일 컴포넌트는 css설정을 컴포넌트 하나에 고정시킨다. 그래서 도큐먼트 전체에 적용하려면 styled-component의 createGlobalStyle를 이용해야 한다.
+- html 도큐먼트의 디폴트 css를 수정하는 방법은 ResetCSS를 사용하면 된다. a태그는 디폴트로 언더라인이 깔리지만, 언더라인이 없도록 변경할 수 있게 된다. `npm -i styled-reset`
+- ResetCSS는 너무 간단한 파일 하나라서 그냥 복사해서 사용할 수 있다. createGlobalStyle안에 css를 복사하면 된다.
+- 컴포넌트를 리턴시킬 때는 하나의 요소만 리턴할 수 있다. 그래서 보통 div로 감싸는 편인데, 이러면 쓸데 없는 div가 많이 늘어나게 된다. `div`대신 고스트 컴포넌트인 빈태그를 이용하면 된다.`<>`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  ```typescript
+  <><GlobalStyle/><Router/><>
+  ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- 구글폰트에서 새로운 폰트를 @Import로 가져다 쓰자. 임포트를 해야 새로운 폰트패밀리를 사용할 수 있다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- [Reset CSS](https://github.com/zacanger/styled-reset/blob/master/src/index.ts)
+- [google font](https://fonts.google.com)
+- [Flat UI Color](https://flatuicolors.com/palette/gb)
+- [createGlobalStyle](https://styled-components.com/docs/api#createglobalstyle)
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
