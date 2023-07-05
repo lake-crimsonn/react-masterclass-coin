@@ -30,6 +30,7 @@
 # 5.2 Home part One
 
 - a태그를 이용한 리스트를 만들면 페이지가 새로고침이 되어버린다. 리액트라우터돔의 `Link`를 이용하면 새로고침 없이 페이지를 이동할 수 있다. 링크는 사실상 a태그를 만드는 건데 리액트라우터돔이 새로고침이 되지 않게 도와준다. 그래서 hover 기능을 추가할 때, a태그의 css를 설정하는 스테이트먼트를 추가해줘야 한다.
+
 - a태그 텍스트의 색상은 디폴트로 파란색이지만 기본 텍스트 색상과 동일하게 만들 수 있다. App컴포넌트에서 a태그의 color를 `inherit`으로 설정하면 된다. 부모와 같은 색상을 사용하겠다는 뜻이다.
 - a태그의 영역은 패딩이 늘어난 리스트의 크기와 동일하지 않다. 그래서 마우스를 리스트 위에 올려보면 마우스 화살표가 손가락으로 변경되지 않는다. a태그의 display를 `block`으로 설정해주자. 리스트의 오른쪽 화면 끝까지 블록으로 설정된다. `padding` 역시 추가해줘서 선택영역을 늘리자.
 - a태그의 `transition`을 color 0.2s ease-in으로 설정해줘서 디테일을 살려보자. 마우스를 호버했을 때 색상이 변경이 되는 것 같아서, a:hover 스테이트먼트 안에서 해결하는 듯 보이지만 아니다. 호버가 아니라 a태그에 직접 transition을 적용하자.
@@ -67,7 +68,7 @@
 
 ---
 
-# 5.4 Home part Two
+# 5.4 Router States
 
 - [Crpyto Icon API](https://coinicons-api.vercel.app/)
 - `` <img src={`https://cryptocurrencyliveprices.com/img/${coin.id}.png`}/> ``
