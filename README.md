@@ -70,7 +70,7 @@
 # 5.4 Home part Two
 
 - [Crpyto Icon API](https://coinicons-api.vercel.app/)
-- `<img src={`https://cryptocurrencyliveprices.com/img/${coin.id}.png`}/> `
+- `` <img src={`https://cryptocurrencyliveprices.com/img/${coin.id}.png`}/> ``
 - `https://cryptocurrencyliveprices.com/img/${coin.id}.png`
 - `https://static.coinpaprika.com/coin/${coin.id}/logo.png`
 - a태그의 display가 flex면 block 속성을 제거해야 텍스트가 가운데 정렬을 한다.
