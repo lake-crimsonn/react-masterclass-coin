@@ -1,8 +1,7 @@
 # 5.0 setup
 
-npm i react-router-dom@5.3.0 react-query
-npm i --save-dev @types/react-router-dom
-
+- npm i react-router-dom@5.3.0 react-query
+- npm i --save-dev @types/react-router-dom
 - api 서버 CoinPaprika
 - https://api.coinpaprika.com/#tag/Tickers
 
@@ -25,5 +24,55 @@ npm i --save-dev @types/react-router-dom
 - [google font](https://fonts.google.com)
 - [Flat UI Color](https://flatuicolors.com/palette/gb)
 - [createGlobalStyle](https://styled-components.com/docs/api#createglobalstyle)
+
+---
+
+# 5.2 Home part One
+
+- a태그를 이용한 리스트를 만들면 페이지가 새로고침이 되어버린다. 리액트라우터돔의 `Link`를 이용하면 새로고침 없이 페이지를 이동할 수 있다. 링크는 사실상 a태그를 만드는 건데 리액트라우터돔이 새로고침이 되지 않게 도와준다. 그래서 hover 기능을 추가할 때, a태그의 css를 설정하는 스테이트먼트를 추가해줘야 한다.
+- a태그 텍스트의 색상은 디폴트로 파란색이지만 기본 텍스트 색상과 동일하게 만들 수 있다. App컴포넌트에서 a태그의 color를 `inherit`으로 설정하면 된다. 부모와 같은 색상을 사용하겠다는 뜻이다.
+- a태그의 영역은 패딩이 늘어난 리스트의 크기와 동일하지 않다. 그래서 마우스를 리스트 위에 올려보면 마우스 화살표가 손가락으로 변경되지 않는다. a태그의 display를 `block`으로 설정해주자. 리스트의 오른쪽 화면 끝까지 블록으로 설정된다. `padding` 역시 추가해줘서 선택영역을 늘리자.
+- a태그의 `transition`을 color 0.2s ease-in으로 설정해줘서 디테일을 살려보자. 마우스를 호버했을 때 색상이 변경이 되는 것 같아서, a:hover 스테이트먼트 안에서 해결하는 듯 보이지만 아니다. 호버가 아니라 a태그에 직접 transition을 적용하자.
+- 컨테이너 컴포넌트에 `margin` 0 auto; `max-width`를 추가하자. 화면이 커져도 가운데에 리스트가 고정이 되어 있다.
+
+---
+
+# 5.3 Home part Two
+
+- api를 가져올 때 fetch보다 axios가 더 편하다. fetch는 json으로 변환해줘야 하지만, axios은 기본적으로 json으로 가져온다.
+- ```javascript
+  const getCoins = async () => {
+    const res = await axios("https://api.coinpaprika.com/v1/coins");
+    setCoins(res.data.slice(0, 100));
+    setLoading(false);
+  };
+  ```
+- api에서 오는 데이터 역시 어떤 타입인지 설명해주는 인터페이스가 있어야 한다.
+- array에 대한 인터페이스를 적용할 때는 `useState<CoinInterface[]>([]);` 이렇게 사용한다.
+- `()()` 함수는 바로 실행할 수 있는 함수인데, 일반적인 함수의 모형을 생각하면 어렵지 않게 이해할 수 있다. useState() -> (useState)() 이렇게 말이다.
+
+- ```javascript
+    useState(() => {}, []); // useState는 이렇게 생겼다
+    useState((=>{
+      ()() // 함수를 따로 만들지 않고 바로 실행할 수 있는 함수
+    },[]));
+    useState((=>{
+      (async ()=>{
+        const response = await fectch('https://url');
+        const json = await response.json();
+        setCoins(json.slice(0,100)); // 100개 짤라오기
+      })();
+    },[]));
+  ```
+
+---
+
+# 5.4 Home part Two
+
+- [Crpyto Icon API](https://coinicons-api.vercel.app/)
+- `<img src={`https://cryptocurrencyliveprices.com/img/${coin.id}.png`}/> `
+- `https://cryptocurrencyliveprices.com/img/${coin.id}.png`
+- `https://static.coinpaprika.com/coin/${coin.id}/logo.png`
+- a태그의 display가 flex면 block 속성을 제거해야 텍스트가 가운데 정렬을 한다.
 
 ---
