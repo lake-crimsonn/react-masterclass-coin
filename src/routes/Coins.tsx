@@ -86,7 +86,14 @@ function Coins() {
         <CoinList>
           {coins.map((c) => (
             <Coin key={c.id}>
-              <Link to={`/${c.id}`}>
+              <Link
+                to={{
+                  pathname: `${c.id}`,
+                  state: {
+                    name: c.name,
+                  },
+                }}
+              >
                 <Img
                   src={`https://static.coinpaprika.com/coin/${c.id}/logo.png`}
                 />

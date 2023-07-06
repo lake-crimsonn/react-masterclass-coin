@@ -75,5 +75,31 @@
 - `https://cryptocurrencyliveprices.com/img/${coin.id}.png`
 - `https://static.coinpaprika.com/coin/${coin.id}/logo.png`
 - a태그의 display가 flex면 block 속성을 제거해야 텍스트가 가운데 정렬을 한다.
+- 링크태그를 이용하면 새로고침을 하지 않고 페이지에 데이터를 보내고 받을 수 있다. 브라우저에 이미 있는 데이터를 넘겨주면 된다. 다시 api 호출을 통해서 데이터를 가져오지 말자.
+- 링크태그를 이용해서 스테이트를 url이 아닌 비하인드씬으로 보낸다.
+
+- ```javascript
+  <Link to={`/${c.id}`}> # 기존
+  <Link to={{
+    pathname: `${c.id}`,
+    state: {
+      name: c.name
+    }
+  }}>
+  ```
+- 스테이트를 수신할 때는 `useLocation`를 통해서 받아야 한다.
+- 스테이트를 비하인드 더 씬으로 주고 받을 경우 문제는 무조건 스테이트를 보낸 곳에서 페이지를 시작해야 한다. 페이지에 접속할 때, 꼭 홈을 거치고 페이지를 열어야 한다. url를 통해서 바로 다이렉트로 접근하면 스테이트를 받아올 수 없어서 오류가 난다.
+- 오류페이지를 방지하는 방법: `{state?.name || "not available"}`
+
+---
+
+# 5.5 Coin Data
+
+- [coin api](https://api.coinpaprika.com/v1/coins/btc-bitcoin)
+- [coin ticker api](https://api.coinpaprika.com/v1/tickers/btc-bitcoin)
+
+---
+
+# 5.6 Data Types
 
 ---
