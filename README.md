@@ -102,4 +102,22 @@
 
 # 5.6 Data Types
 
+- api로 받아온 json의 타입 편리하게 정해주는 방법
+
+1. 브라우저 콘솔에서 json을 출력한다.
+2. 오른쪽 마우스를 클릭하고 `store object as global variable`클릭
+3. 콘솔창 프롬프트에 `Object.keys(temp1).join()` 입력. 하나의 문자열로 만들고 복사해서 가져온다.
+4. ctrl+d 연타해서 쉼표 전부다 지우고 엔터.
+5. `Object.values(temp1).map(c=>typeof(c)).join()` 밸류 가져오기
+6. ctrl+shift+L 혹은 ctrl+alt로 커서 길게 만든 다음 end버튼으로 커서를 문자 끝으로 보내주고 밸류 잘라 붙여넣어주기.
+
+- 가져온 타입이 배열인 경우
+- 따로 인터페이스를 만들어주고 타입을 지정해준다.
+- `tags: ITags[];` 대괄호를 잊지 말아야한다.
+- json안에 배열도 있지만, 변수안에 다른 딕셔너리가 있다. `quotes.USD`
+
+---
+
+# 5.7 Nested Routes part One
+
 ---
