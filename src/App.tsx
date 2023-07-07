@@ -1,6 +1,6 @@
 import Router from "./Router";
 import { createGlobalStyle } from "styled-components";
-
+import { ReactQueryDevtools } from "react-query/devtools";
 const GobalStyle = createGlobalStyle`
 //추가1
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
@@ -72,6 +72,7 @@ function App() {
     <>
       <GobalStyle />
       <Router />
+      <ReactQueryDevtools initialIsOpen={true} />
     </>
   );
 }

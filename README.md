@@ -194,3 +194,51 @@
 
 - api를 받아오는 중인 상태라면 리액트쿼리가 false를 반환해서 로딩 상태다. api를 성공적으로 받아오면 true를 반환해서 api 데이터가 담긴 data를 사용할 수 있게 된다.
 - 리액트쿼리는 데이터를 캐시에 저장해두기 때문에 데이터를 파괴하지 않고 유지해준다.
+
+---
+
+# 5.10 React Query part Two
+
+- ```typescript
+  import { ReactQueryDevtools } from "react-query/devtools";
+  <ReactQueryDevtools initialIsOpen={true} />;
+  ```
+- 리액트쿼리의 `Devtools`을 이용하면 캐시에 저장해둔 데이터를 확인할 수 있다.
+
+```typescript
+const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
+  ["info", coinId],
+  () => fetchCoinInfo(coinId)
+);
+const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
+  ["tickers", coinId],
+  () => fetchCoinTickers(coinId)
+);
+```
+
+- `queryHash: "[\"allCoins\"]"` 쿼리해시가 배열을 받기 때문에 `["tickers",coinId]처럼 배열을 보낼 수 있다. 타입스크립트는 이름이 중복되는 걸 매우 싫어하는데, 같은 이름의 coinId가 보내지니 구별을 하기 위해, 앞에 "info","tickers"를 붙여서 함께 보내야 한다.
+- `{isLoading,data}` 역시 위아래 스테이트먼트가 중복이 되니까 `: infoLoading, : tickersLoading` 구분을 해준다.
+- 콜백개념
+
+  ```
+  Q: 혹시 이 영상에서 reactQuery 쓸때
+  useQuery(["info",coinId], ()=>fetchCoinInfo(coinId)) 이 코드에서
+  왜 ()=>fetchCoinInfo(coinId) 이런 방식으로 써야하는지 아시는분 계신가요?
+  그냥 fetchCoinInfo(coinId) 만 쓰면 오류가 나더라고요 ㅠ
+
+  A: 첫번째: Coins.tsx의 fetchCoins 에는 뒤에 ()가 붙지 않습니다.
+  두번째 : Coin.tsx 의 () => fetchfunction(argument) 는 함수 뒤에 ()가 있고 그안에 인자가 들어가지만 앞에서 () => 를 표현하여 주었으므로 일종의 함수 포장지 입니다.
+
+  정리 : useQuery 의 두번째 인자로는 함수가 들어가야 하지 함수의 실행값이 들어가서는 안됩니다. 함수의 뒤에 ()를 붙이는것은 함수를 실행하겠다는 의미이고, ()를 붙이지 않는것은 함수의 실행권한을 이벤트에게 넘기겠다는 말과 같습니다.
+
+  영상에서는 함수 뒤에 인자를 넣어주어야 하는데 함수에 괄호를 열고 바로 인자를 집어넣으면 함수를 전달하는 모양이 아닌 함수를 실행하여 리턴된 값을 전달하게 되므로 기대하지 않은 파라미터를 넘기는것과 같습니다. 그렇기 때문에 () => 를 써서 함수안에 집어넣은 모양을 만들어 주는것입니다.
+  ```
+
+- 데브툴스는 개발환경에서만 실행이 되며, 프로덕션 빌드 중에 제외가 된다.
+- stale은 최신화가 필요한 데이터를 의미한다. stale상태는 데이터를 리프레시 해야한다. [참고 블로그](https://2ham-s.tistory.com/407)
+
+---
+
+# 5.11 Recap
+
+---
