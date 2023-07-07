@@ -167,3 +167,30 @@
 - isActive의 boolean을 통해서 태그를 활성화할 수 있다. priceMatch(useRouteMatch 후크의 변수)에 오브젝트가 존재해서 true를 반환하고 탭이 활성화된다. useRouteMatch를 이용하지 않으면 null을 반환한다.
 
 ---
+
+# 5.9 React Query part One
+
+- npm i react-query
+
+- ```typescript
+  import { QueryClient, QueryClientProvider } from "react-query";
+  const queryClinet = new QueryClient()
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider>...</ThemeProvider>
+  </QueryClientProvider>
+  ```
+
+- 리액트쿼리는 코인에 대한 api를 받아오는 것부터 로딩까지 이르는 과정을 자동으로 처리해준다.
+- fetcher함수는 컴포넌트에서 fetch코드를 분리해 놓은 파일이다. fetcher는 fetch promise를 꼭 리턴해줘야 한다. 프로미스를 이용하면 리턴 스테이트먼트에 한줄로 남길 수 있어서 async-await의 옛방식이라도 유용하다.
+
+- ```typescript
+  const { isLoading, data } = useQuery<CoinInterface[]>(
+    ["allCoins"],
+    fetchCoins
+  );
+  // "allCoins"는 쿼리의 고유식별자
+  // fetchCoins는 fetcher함수
+  ```
+
+- api를 받아오는 중인 상태라면 리액트쿼리가 false를 반환해서 로딩 상태다. api를 성공적으로 받아오면 true를 반환해서 api 데이터가 담긴 data를 사용할 수 있게 된다.
+- 리액트쿼리는 데이터를 캐시에 저장해두기 때문에 데이터를 파괴하지 않고 유지해준다.
