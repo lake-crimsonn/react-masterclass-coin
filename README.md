@@ -167,5 +167,3 @@
 - isActive의 boolean을 통해서 태그를 활성화할 수 있다. priceMatch(useRouteMatch 후크의 변수)에 오브젝트가 존재해서 true를 반환하고 탭이 활성화된다. useRouteMatch를 이용하지 않으면 null을 반환한다.
 
 ---
-
-# 5.9 React Query part One
