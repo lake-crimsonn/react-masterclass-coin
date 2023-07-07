@@ -90,6 +90,8 @@
 - 스테이트를 수신할 때는 `useLocation`를 통해서 받아야 한다.
 - 스테이트를 비하인드 더 씬으로 주고 받을 경우 문제는 무조건 스테이트를 보낸 곳에서 페이지를 시작해야 한다. 페이지에 접속할 때, 꼭 홈을 거치고 페이지를 열어야 한다. url를 통해서 바로 다이렉트로 접근하면 스테이트를 받아올 수 없어서 오류가 난다.
 - 오류페이지를 방지하는 방법: `{state?.name || "not available"}`
+- state가 존재하면 name을 불러와줘. state가 존재하지 않으면 error를 던지지 말고 undefined를 보여줘.
+- state?.name이 null, undefined, empty string이면 "not available"을 보여줘
 
 ---
 
@@ -120,4 +122,50 @@
 
 # 5.7 Nested Routes part One
 
+- [Nested React Router V6 Guide](https://ui.dev/react-router-nested-routes)
+- useEffect를 이용하는 경우 보통 마지막 [] 어레이어 변수를 넣어준다. 웹페이지의 성능을 때문에 변수의 스테이트가 변경할 때만 리렌더링 하도록 설정하기 위해서다. 하지만 이번 케이스는 항상 url에 변수를 받아오기 때문에 변수의 스테이트가 변경되지 않으니, 어레이를 비워두어도 괜찮다. 어레이가 비어 있는 걸 no dependency라고 한다.
+
+- ```typescript
+  <Title>
+    {state?.name ? state.name : loading ? "Loading..." : info?.name}
+  </Title>
+  ```
+
+- state가 존재하면 name을 보여줘. 존재하지 않으면 undefined를 보여줘. state가 존재하고, name에 값이 존재한다면, state.name을 보여줘.
+- state.name이 없다면 loading을 보여줘. loading이 true면 "Loading..."를 보여줘. loading이 false면 info?.name을 보여줘. info가 존재하면 name을 보여줘. info가 없으면 undefined를 보여줘.
+- `NestedRoute`: 라우트안에 있는 라우트. 다른 도메인으로 요청을 보냈지만 화면이 변경되지 않고, 같은 화면에서 응답하는 방법.
+- App 컴포넌트는 Router 컴포넌트를 이미 포함하고 있다. Router 컴포넌트는 Coin 컴포넌트를 포함하고 있다. Coin 컴포넌트에 새로운 Route태그를 가지게 된다. 한마디로 라우트안에 라우트.
+
 ---
+
+# 5.8 Nested Routes part Two
+
+- 네스티트 라우트를 이용하기 때문에 URL을 통해서 화면의 일정 부분이 리렌더링이 된다. URL을 이용하는 태그는 anchor인데, 리액트를 이용하니 Link태그를 이용해서 화면을 리렌더링하게 된다.
+- `useRouteMatch`은 특정한 URL를 선택하면 오브젝트를 받아 오는 후크다.
+- `const chartMatch = useRouteMatch("/:coinId/chart");` /:coinId/chart라는 텍스트가 URL에 존재하면 링크태그에 있는 오브젝트를 보여준다. useParams는 이전 페이지의 링크태그에서 보내주는 pathname를 통해 URL에 있는 텍스트를 받아온다. useLocation은 이전 페이지의 스테이트를 받아와서 리프레쉬를 막아주면서 UX을 지켜준다.
+- ```typescript
+  const Tab = styled.span<{ isActive: boolean }>`
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 400;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 7px 0px;
+    border-radius: 10px;
+    color: ${(props) =>
+      props.isActive ? props.theme.accentColor : props.theme.textColor};
+    a {
+      display: block;
+    }
+  `;
+
+  <Tab isActive={priceMatch !== null}>
+    <Link to={`/${coinId}/price`}>Price Detail</Link>
+  </Tab>;
+  ```
+
+- isActive의 boolean을 통해서 태그를 활성화할 수 있다. priceMatch(useRouteMatch 후크의 변수)에 오브젝트가 존재해서 true를 반환하고 탭이 활성화된다. useRouteMatch를 이용하지 않으면 null을 반환한다.
+
+---
+
+# 5.9 React Query part One
