@@ -24,17 +24,20 @@ function Chart({ coinId }: ChartProps) {
       // refetchInterval: 5000,
     }
   );
+  console.log(data);
   return (
     <>
       {isLoading ? (
         "Loading chart..."
       ) : (
         <ApexChart
-          type="line"
+          type="candlestick"
           series={[
             {
               name: "price",
-              data: data?.map((price) => price.close) as number[],
+              data: data?.map((price) =>
+                new Date(price.time_close * 1000).toUTCString()
+              ),
             },
           ]}
           options={{
@@ -67,9 +70,20 @@ function Chart({ coinId }: ChartProps) {
               gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
             },
             colors: ["#0fbcf9"],
-            tooltip: {
-              y: {
-                formatter: (value) => `${value.toFixed(3)}`,
+            // tooltip: {
+            //   y: {
+            //     formatter: (value) => `${value.toFixed(3)}`,
+            //   },
+            // },
+            plotOptions: {
+              candlestick: {
+                colors: {
+                  upward: "#00B746",
+                  downward: "#EF403C",
+                },
+                wick: {
+                  useFillColor: true,
+                },
               },
             },
           }}
