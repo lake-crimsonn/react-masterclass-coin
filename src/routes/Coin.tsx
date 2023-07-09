@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Chart from "./Chart";
 import Price from "./Price";
+import { fetchCoinInfo, fetchCoinTickers } from "../api";
+import { useQuery } from "react-query";
 
 const Title = styled.h1`
   color: ${(props) => props.theme.accentColor};
@@ -152,13 +154,25 @@ interface PriceData {
 
 function Coin() {
   //   const { coinId } = useParams<{ coinId: string }>();
+  const priceMatch = useRouteMatch("/:coinId/price");
+  const chartMatch = useRouteMatch("/:coinId/chart");
+
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
+
+  const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
+    ["info", coinId],
+    fetchCoinInfo
+  );
+
+  const { isLoading: tickersLoading, data: tickersData } = useQuery<InfoData>(
+    ["tickers", coinId],
+    fetchCoinTickers
+  );
+
   const [loading, setLoading] = useState(true);
   const [info, setInfo] = useState<InfoData>();
   const [priceInfo, setPriceInfo] = useState<PriceData>();
-  const priceMatch = useRouteMatch("/:coinId/price");
-  const chartMatch = useRouteMatch("/:coinId/chart");
 
   useEffect(() => {
     (async () => {
