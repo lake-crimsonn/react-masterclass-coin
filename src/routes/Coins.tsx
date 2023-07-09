@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import { fetchCoins } from "../api";
+import { Helmet } from "react-helmet-async";
 
 const Title = styled.h1`
   color: ${(props) => props.theme.accentColor};
@@ -82,6 +83,9 @@ function Coins() {
 
   return (
     <Container>
+      <Helmet>
+        <title>💰 Coins 😍</title>
+      </Helmet>
       <Header>
         <Title>💰 Coins 😍</Title>
       </Header>
@@ -96,6 +100,7 @@ function Coins() {
                   pathname: `${c.id}`,
                   state: {
                     name: c.name,
+                    symbol: c.symbol.toLowerCase(),
                   },
                 }}
               >

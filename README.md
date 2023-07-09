@@ -218,6 +218,7 @@ const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
 
 - `queryHash: "[\"allCoins\"]"` 쿼리해시가 배열을 받기 때문에 `["tickers",coinId]처럼 배열을 보낼 수 있다. 타입스크립트는 이름이 중복되는 걸 매우 싫어하는데, 같은 이름의 coinId가 보내지니 구별을 하기 위해, 앞에 "info","tickers"를 붙여서 함께 보내야 한다.
 - `{isLoading,data}` 역시 위아래 스테이트먼트가 중복이 되니까 `: infoLoading, : tickersLoading` 구분을 해준다.
+- [구조 분해 할당](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
 - 콜백개념
 
   ```
@@ -234,11 +235,201 @@ const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
   영상에서는 함수 뒤에 인자를 넣어주어야 하는데 함수에 괄호를 열고 바로 인자를 집어넣으면 함수를 전달하는 모양이 아닌 함수를 실행하여 리턴된 값을 전달하게 되므로 기대하지 않은 파라미터를 넘기는것과 같습니다. 그렇기 때문에 () => 를 써서 함수안에 집어넣은 모양을 만들어 주는것입니다.
   ```
 
-- 데브툴스는 개발환경에서만 실행이 되며, 프로덕션 빌드 중에 제외가 된다.
-- stale은 최신화가 필요한 데이터를 의미한다. stale상태는 데이터를 리프레시 해야한다. [참고 블로그](https://2ham-s.tistory.com/407)
+- `()=>fetchCoinInfo(coinId)` ()=> 어나니머스함수는 fecthCoinfo함수를 실행시키는 함수. 이렇게 포장지를 감싸줘야 함수 자체를 파라미터로 넘길 수 있다. Coins.tsx의 useQuery("allCoins", fetchCoins);는 함수 실행 권한을 이벤트에게 넘긴다. 함수 자체를 인자로 넘긴다는 말이다. 만약에 fetchCoins()로 파라미터를 넘긴다면, fetchCoins()가 실행이 되고 그 리턴값이 파라미터가 된다.
+- `()=>fetchCoinInfo(coinId)`는 coinId를 fetchCoinInfo의 인자로 넘겨야 하기 때문에, ()를 넣어줘야 하고, ()를 넣는다는 건 함수를 실행시킨다는 뜻이다. 함수가 실행이 되면 리턴된 프로미스가 파라미터로 넘어간다. 그러면 안된다. 이 함수는 콜백함수로써 api를 다 받아온 뒤에 실행이 되어야 하기 때문에 함수의 실행 권한을 이벤트가 가지고 있어야 한다. 그래서 이 함수를 실행시키는 함수를 파라미터로 넘긴다.
+
+* 데브툴스는 개발환경에서만 실행이 되며, 프로덕션 빌드 중에 제외가 된다.
+* stale은 최신화가 필요한 데이터를 의미한다. stale상태는 데이터를 리프레시 해야한다. [참고 블로그](https://2ham-s.tistory.com/407)
 
 ---
 
 # 5.11 Recap
 
+- nothing to note
+
 ---
+
+# 5.12 Price Chart
+
+- ohlcv 새 주소
+  https://ohlcv-api.nomadcoders.workers.dev
+- Math.floor(1.9) -> 1
+- Math.ceil(1.9) -> 2
+
+- ```typescript
+  const endDate = Math.floor(Date.now() / 1000);
+  const startDate = endDate - 60 * 60 * 24 * 7 * 2; // 7일 계
+  ```
+
+- ```typescript
+  // api.ts
+  export function fetchCoinHistory(coinId: string) {
+    return fetch(`${OHLVC_URL}?coinId=${coinId}`).then((response) =>
+      response.json()
+    );
+  }
+
+  //Coin.tsx
+  <Route path={`/${coinId}/chart`}>
+    <Chart coinId={coinId} />
+  </Route>;
+
+  //Chart.tsx
+  function Chart({ coinId }: ChartProps) {
+    const { isLoading, data } = useQuery(["ohlcv", coinId], () =>
+      fetchCoinHistory(coinId)
+    );
+    return <h1>Chart</h1>;
+  }
+  ```
+
+---
+
+# 5.13 Price Chart part Two
+
+- APEXCHARTS
+- `npm install --save react-apexcharts apexcharts`
+
+  ```typescript
+  import ApexChart from "react-apexcharts";
+  ```
+
+- api에서 price.close이 문자열이라서 생기는 문제가 있다. 형변환을 통해서 문제를 해결.
+
+  ```typescript
+  series={[
+    {
+      name: "sales",
+      data: data?.map((price) => price.close) as number[],
+    },
+  ]}
+  ```
+
+- ??[]는 데이터가 null이 되는 걸 방지하는 코드다. null 대신 빈 배열로 바꿔준다.
+
+  ```typescript
+  series={[
+    {
+      name: "sales",
+      data: data?.map((price) => parseFloat(price.close)) ?? [],
+    },
+  ]}
+
+  ```
+
+- ApexChart 사용하는 방법
+
+  ```typescript
+  <ApexChart
+    type="line"
+    series={[
+      {
+        name: "price",
+        data: data?.map((price) => price.close) as number[],
+      },
+    ]}
+    options={{
+      theme: { mode: "dark" },
+      chart: {
+        height: 200,
+        width: 500,
+        toolbar: { show: false },
+      },
+      stroke: {
+        curve: "smooth",
+        width: 2,
+      },
+      grid: {
+        show: false,
+      },
+      yaxis: {
+        show: false,
+      },
+      xaxis: {
+        labels: { show: false },
+        axisTicks: { show: false },
+      },
+    }}
+  />
+  ```
+
+---
+
+# 5.14 Price Chart part Three
+
+- 유닉스 시간 바꾸기
+  ```typescript
+  categories: data?.map((price) =>
+                new Date(price.time_close * 1000).toUTCString()
+              ),
+  ```
+
+---
+
+# 5.15 Final Touches
+
+- 5초 마다 갱신하기
+- ```typescript
+  const { isLoading, data } = useQuery<IHistoricalData[]>(
+    ["ohlcv", coinId],
+    () => fetchCoinHistory(coinId),
+    {
+      refetchInterval: 5000,
+    }
+  );
+  ```
+- react-helmet
+- `npm i react-helmet`
+- `npm i --save-dev @types/react-helmet`
+- `npm i react-helmet-async`
+
+- 헬멧을 이용해서 html의 head에 대한 정보를 바꿀 수 있다.
+
+```typescript
+import { HelmetProvider } from "react-helmet-async";
+// App
+<HelmetProvider>
+  <Router />
+</HelmetProvider>
+
+// Coin
+<Helmet>
+  <title>
+    {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
+  </title>
+</Helmet>
+
+```
+
+---
+
+# 5.16 Conclusion
+
+- github.io 배포할 때 주의사항
+
+- ```
+  BrowserRouter로 하는 방법-
+  우리가 프로젝트중인 폴더를 기준으로
+  Router.tsx 파일에서
+  BrowserRouter> 이 부분을
+  BrowserRouter basename={process.env.PUBLIC_URL}>
+  이렇게 수정해주시면 됩니다. (앞에 < 넣으세요)
+
+  이것을 설정을 안 해주면
+  라우터가 가리키는 "/"의 경로는 “https://닉네임.github.io/” 주소뒤에 오는 "/"의 경로입니다.
+  하지만 여러분의 프로젝트 설정 경로는 “https://닉네임.github.io/리포지터리이름/”에 있기때문에
+  빈 화면만 뜨는 것 입니다.
+  예를 들어 우리의 깃허브 닉네임이 potato 이고 리포지터리 이름을 master-class라고했다면
+
+  우리는 https://potato.github.io/master-class/ 여기에 경로가 설정되도록 만들었습니다.
+  하지만 deploy를 하고 난뒤에 라우터가 가리키는 "/"의 경로는 https://potato.github.io/ 입니다.
+  이 잘못된 경로를 수정하기 위해 BrowserRouter basename={process.env.PUBLIC_URL}> 을
+  해주면 우리가 처음 의도했던 경로로 이동합니다.
+  여기서 PUBLIC_URL은 package.json의 homepage URL값으로 설정이 됩니다.
+  ```
+
+참고링크:https://create-react-app.dev/docs/advanced-configuration/
+
+```
+
+```
