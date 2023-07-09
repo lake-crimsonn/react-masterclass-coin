@@ -407,7 +407,7 @@ import { HelmetProvider } from "react-helmet-async";
 
 - github.io 배포할 때 주의사항
 
-- ```
+  ```
   BrowserRouter로 하는 방법-
   우리가 프로젝트중인 폴더를 기준으로
   Router.tsx 파일에서
@@ -426,10 +426,5 @@ import { HelmetProvider } from "react-helmet-async";
   이 잘못된 경로를 수정하기 위해 BrowserRouter basename={process.env.PUBLIC_URL}> 을
   해주면 우리가 처음 의도했던 경로로 이동합니다.
   여기서 PUBLIC_URL은 package.json의 homepage URL값으로 설정이 됩니다.
+  참고링크:https://create-react-app.dev/docs/advanced-configuration/
   ```
-
-참고링크:https://create-react-app.dev/docs/advanced-configuration/
-
-```
-
-```
